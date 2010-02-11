@@ -9,7 +9,7 @@ bot = Isaac::Bot.new do
   end
 
   helpers do
-    def lounas(channel, args)
+    def handle_lounas(channel, args)
       msg channel, "Lounas: yks kaks"
     end
   end
@@ -19,7 +19,9 @@ bot = Isaac::Bot.new do
   end
 
   on :channel, /^[!](.+)/ do |cmdstr|
-    (cmd,args) = cmdstr.split(' ', 2)
+    parts = cmdstr.split(' ', 2)
+    cmd = "handle_#{parts[0]}".to_sym
+    args = parts[1]
     if respond_to? cmd
       send(cmd, channel, args)
     else
