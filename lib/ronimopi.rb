@@ -17,6 +17,12 @@
 require 'isaac/bot'
 CFGDIR=File::join(ENV['HOME'], '.config', 'ronimopi')
 
+def helpers_as_string
+  Dir::glob(File::join(CFGDIR, 'commands.d', '*.rb')).inject("") do |str,file|
+    str << File.new(file).read
+  end
+end
+
 bot = Isaac::Bot.new do
   @channels = []
   
@@ -32,13 +38,7 @@ bot = Isaac::Bot.new do
   end
 
   helpers do
-    helperstr = ""
-    Dir::glob(File::join(CFGDIR, 'commands.d', '*.rb')).each do |helper|
-      File.new(helper).each_line do |line|
-        helperstr << line
-      end
-    end
-    eval helperstr
+    eval helpers_as_string
   end
   
   on :connect do
