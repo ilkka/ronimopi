@@ -28,7 +28,8 @@ bot = Isaac::Bot.new do
   
   on :connect do
     @channels.each do |ch|
-      puts "would join #{ch}"
+      puts "Joining #{ch}"
+      join ch
     end
   end
 
