@@ -3,10 +3,17 @@ require 'isaac/bot'
 CFGDIR=File::join(ENV['HOME'], '.config', 'ronimopi')
 
 bot = Isaac::Bot.new do
+  @channels = []
+  
   configure do |cfg|
-    cfg.nick = "ronimopi"
-    cfg.server = "irctr01.sasken.com"
-    cfg.port = 6667
+    File::open(File::join(CFGDIR, 'config.yml')) do |yf|
+      YAML.each_document(yf) do |ydoc|
+        cfg.nick = ydoc["nick"] if ydoc.key? "nick"
+        cfg.server = ydoc["server"] if ydoc.key? "server"
+        cfg.port = ydoc["port"] if ydoc.key? "port"
+        @channels += ydoc["channels"] if ydoc.key? "channels"
+      end
+    end
   end
 
   helpers do
@@ -20,7 +27,9 @@ bot = Isaac::Bot.new do
   end
   
   on :connect do
-    join "#vzkhgk"
+    @channels.each do |ch|
+      puts "would join #{ch}"
+    end
   end
 
   on :channel, /^[!](.+)/ do |cmdstr|
