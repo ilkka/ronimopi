@@ -1,4 +1,20 @@
-# lunch plugin
+# lunch plugin for Ronimopi
+#
+# Ronimopi, a simple extensible IRC bot
+# Copyright (C) 2010 Ilkka Laukkanen <ilkka.s.laukkanen@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or (at
+# your option) any later version.
+
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @places = {}
 def handle_lounas(channel, nick, args)
   puts "Handling lunch for #{channel} where #{nick} requested #{args}"
