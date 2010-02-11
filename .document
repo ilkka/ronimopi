@@ -1,5 +1,3 @@
-README.rdoc
-lib/**/*.rb
+README.markdown
 bin/*
-features/**/*.feature
-LICENSE
+COPYING
