@@ -22,6 +22,8 @@ examples/commands.d directory. Create a commands.d directory under the
 config directory you created above, and copy the plugins you would
 like to use to that directory.
 
+After you have done these things, just run it.
+
 Writing more command handlers is easy-peasy: look at the
 examples. Whatever you do in the plugins gets evaluated in the context
 of Isaac's helpers, so take a look at Isaac's documentation too.
