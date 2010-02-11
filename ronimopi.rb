@@ -34,7 +34,7 @@ bot = Isaac::Bot.new do
   end
 
   on :channel, /^[!](.+)/ do |cmdstr|
-    parts = cmdstr.split(' ', 2)
+    parts = cmdstr.split(/\s+/, 2)
     cmd = "handle_#{parts[0]}".to_sym
     args = parts[1]
     if respond_to? cmd
