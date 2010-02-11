@@ -13,6 +13,9 @@ Copyright (C) 2010 Ilkka Laukkanen
 Installation
 ------------
 
+This program requires the Isaac bot framework. To install it,
+e.g. "gem install isaac".
+
 Create the directory $HOME/.config/ronimopi and copy the provided
 example config.yml file there. You will find it in the examples
 directory. Customize the file to your liking.
