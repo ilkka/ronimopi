@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'isaac/bot'
+CFGDIR=File::join(ENV['HOME'], '.config', 'ronimopi')
 
 bot = Isaac::Bot.new do
   configure do |cfg|
@@ -9,9 +10,13 @@ bot = Isaac::Bot.new do
   end
 
   helpers do
-    def handle_lounas(channel, args)
-      msg channel, "Lounas: yks kaks"
+    helperstr = ""
+    Dir::glob(File::join(CFGDIR, 'commands.d', '*.rb')).each do |helper|
+      File.new(helper).each_line do |line|
+        helperstr << line
+      end
     end
+    eval helperstr
   end
   
   on :connect do
@@ -23,7 +28,7 @@ bot = Isaac::Bot.new do
     cmd = "handle_#{parts[0]}".to_sym
     args = parts[1]
     if respond_to? cmd
-      send(cmd, channel, args)
+      send(cmd, channel, nick, args)
     else
       msg channel, "I don't know that command"
     end
