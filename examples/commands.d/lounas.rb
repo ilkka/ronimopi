@@ -15,14 +15,31 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-@places = {}
+
+@lounas_places = {}
+LOUNAS_DATEFMT = '%Y%m%d'
+@lounas_date = Time::now.localtime.strftime(LOUNAS_DATEFMT)
+
+# open up Array and add count if not there
+class Array
+  def count
+    return length
+  end
+end unless Array.method_defined? "count"
+
 def handle_lounas(channel, nick, args)
   puts "Handling lunch for #{channel} where #{nick} requested #{args}"
+  datenow = Time::now.localtime.strftime(LOUNAS_DATEFMT)
+  if @lounas_date != datenow
+    puts "Date changed, wiping places"
+    @lounas_places.clear
+    @lounas_date = datenow
+  end
   if args.nil?
     puts "Sorting places"
-    str = @places.keys.sort {|a,b| @places[b].count <=> @places[a].count }.inject('') do |s,p|
+    str = @lounas_places.keys.sort {|a,b| @lounas_places[b].count <=> @lounas_places[a].count }.inject('') do |s,p|
       s << "; " unless s.empty?
-      s << "#{p}: #{@places[p].join(', ')}"
+      s << "#{p}: #{@lounas_places[p].join(', ')}"
     end
     puts "Outputting: #{str}"
     msg channel, str
@@ -32,13 +49,20 @@ def handle_lounas(channel, nick, args)
       puts "Place: #{place}"
       if place =~ /^\^/
         place = place[1..-1]
+        return if place.empty?
         puts "Deleting #{nick} from #{place}"
-        @places[place].delete(nick) unless !@places.key?(place)
-        @places.delete(place) if @places[place].empty?
+        if ! @lounas_places[place].nil?
+          @lounas_places[place].delete(nick)
+          if @lounas_places[place].empty? 
+            @lounas_places.delete(place)
+          end
+        end
       else
         puts "Adding #{nick} to #{place} if not there already"
-        @places[place] = [] unless @places.key?(place)
-        @places[place] << nick unless @places[place].include? nick
+        if @lounas_places[place].nil?
+          @lounas_places[place] = []
+        end
+        @lounas_places[place] << nick unless @lounas_places[place].include? nick
       end
     end
   end
