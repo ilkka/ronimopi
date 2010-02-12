@@ -17,15 +17,11 @@
 require 'isaac/bot'
 CFGDIR=File::join(ENV['HOME'], '.config', 'ronimopi')
 
-def helpers_as_string
-  Dir::glob(File::join(CFGDIR, 'commands.d', '*.rb')).inject("") do |str,file|
-    str << File.new(file).read
-  end
-end
+$ronimopi = Isaac::Bot.new do
 
-bot = Isaac::Bot.new do
   @channels = []
-  
+  @owner = ''  
+
   configure do |cfg|
     File::open(File::join(CFGDIR, 'config.yml')) do |yf|
       YAML.each_document(yf) do |ydoc|
@@ -33,12 +29,28 @@ bot = Isaac::Bot.new do
         cfg.server = ydoc["server"] if ydoc.key? "server"
         cfg.port = ydoc["port"] if ydoc.key? "port"
         @channels += ydoc["channels"] if ydoc.key? "channels"
+        @owner = ydoc["owner"] if ydoc.key? "owner"
       end
     end
   end
 
   helpers do
-    eval helpers_as_string
+    def helpers_as_string
+      Dir::glob(File::join(CFGDIR, 'commands.d', '*.rb')).inject('') do |str,fn|
+        str << File.new(fn).read
+      end
+    end
+    
+    def helper_method_names
+      methods.select {|name| name =~ /^handle_/}
+    end
+
+    def help_text
+      "Commands: " + helper_method_names.map {|name| name[7..-1]}.join(', ')
+    end
+
+    helperstr = helpers_as_string
+    eval helperstr
   end
   
   on :connect do
@@ -46,6 +58,10 @@ bot = Isaac::Bot.new do
       puts "Joining #{ch}"
       join ch
     end
+  end
+
+  on :channel, /^[!]help/ do
+    msg nick, help_text
   end
 
   on :channel, /^[!](.+)/ do |cmdstr|
@@ -63,5 +79,3 @@ bot = Isaac::Bot.new do
     # catchall, do nothing
   end
 end
-
-bot.start
