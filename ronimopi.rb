@@ -18,6 +18,13 @@
 require 'isaac/bot'
 CFGDIR=File::join(ENV['HOME'], '.config', 'ronimopi')
 
+# add start_with? to string unless there
+class String
+  def start_with? pfx
+    return slice(0, pfx.length) == pfx
+  end
+end unless String.method_defined? "start_with?"
+
 bot = Isaac::Bot.new do
   @channels = []
   
